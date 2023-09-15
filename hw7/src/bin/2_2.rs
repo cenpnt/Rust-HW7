@@ -1,87 +1,57 @@
 fn main() {
     let args: Vec<String> = std::env::args().collect();
 
-    let mut result: Vec<(f64,f64)> = Vec::new();
-
-    let mut new_args = args.len();
-    if args.len() % 2 != 0{
-        new_args -= 1;
+    if args.len() < 2 {
+        return;
     }
 
-    for i in 1..new_args {
-        if args[i].parse::<f64>().is_ok() == false{
-            return println!("Invalid input")
-        }
-        if i % 2 == 0{
-            continue;
-        }else{   
-            if i+1 >= new_args{           
-            break;
-        }
-        result.push((args[i].parse().unwrap(), args[i+1].parse().unwrap()));
-        }  
-    } 
+    let mut check: Vec<f64> = Vec::new();
 
-    bubble_sort_x(& mut result);
-    println!("Ascending order by x: {:?}", result);
+    for i in 1..args.len() {
+        if args[i].parse::<f64>().is_ok() == false {
+            println!("Invalid input");
+            return;
+        }
+        check.push(args[i].parse().unwrap());
+    }
+
+    if check.len() % 2 != 0 {
+        check.pop();
+    }
+
+    let mut result: Vec<(f64, f64)> = Vec::new();
+
+    for j in 0..check.len() / 2 {
+        result.push((check[j * 2], check[j * 2 + 1]));
+    }    
+
+    bubble_sort(&mut result, |a, b| {
+        a.0.partial_cmp(&b.0).unwrap().then_with(|| a.1.partial_cmp(&b.1).unwrap())
+    });
     
-    bubble_sort_x_des(& mut result);
-    println!("Descending order by x: {:?}", result);
+    println!("Ascending order: {:?}", result);
 
-    bubble_sort_y(& mut result);
-    println!("Ascending order by y: {:?}", result);
-    
-    bubble_sort_y_des(& mut result);
-    println!("Descending order by y: {:?}", result);
+    bubble_sort(&mut result, |a, b| {
+        b.0.partial_cmp(&a.0).unwrap().then_with(|| b.1.partial_cmp(&a.1).unwrap())
+    });
+
+    println!("Descending order: {:?}", result);
 }
 
-fn bubble_sort_x(list: &mut Vec<(f64,f64)>) {
-    let num = list.len();
-    for i in 0..num - 1{
-        for j in 0..num - i - 1{
-            if list[j].0 > list[j + 1].0 {
-                let temp = list[j].0;
-                list[j].0 = list[j + 1].0;
-                list[j + 1].0 = temp;
-            }
-        }
-    }
-}
+fn bubble_sort<T, F>(list: &mut Vec<T>, compare: F)
+where
+    F: Fn(&T, &T) -> std::cmp::Ordering,
+{
+    let len = list.len();
+    let mut swap = true;
 
-fn bubble_sort_x_des(list: &mut Vec<(f64,f64)>) {
-    let num = list.len();
-    for i in 0..num - 1{
-        for j in 0..num - i - 1{
-            if list[j].0 < list[j + 1].0 {
-                let temp = list[j].0;
-                list[j].0 = list[j + 1].0;
-                list[j + 1].0 = temp;
-            }
-        }
-    }
-}
+    while swap {
+        swap = false;
 
-fn bubble_sort_y(list: &mut Vec<(f64,f64)>) {
-    let num = list.len();
-    for i in 0..num - 1{
-        for j in 0..num - i - 1{
-            if list[j].1 > list[j + 1].1 {
-                let temp = list[j].1;
-                list[j].1 = list[j + 1].1;
-                list[j + 1].1 = temp;
-            }
-        }
-    }
-}
-
-fn bubble_sort_y_des(list: &mut Vec<(f64,f64)>) {
-    let num = list.len();
-    for i in 0..num - 1{
-        for j in 0..num - i - 1{
-            if list[j].1 < list[j + 1].1 {
-                let temp = list[j].1;
-                list[j].1 = list[j + 1].1;
-                list[j + 1].1 = temp;
+        for i in 0..len - 1 {
+            if compare(&list[i], &list[i + 1]) == std::cmp::Ordering::Greater {
+                list.swap(i, i + 1);
+                swap = true;
             }
         }
     }
