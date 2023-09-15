@@ -21,7 +21,7 @@ fn test_sort_number_bubble() -> TestResult {
 
 #[test]
 fn sort_points() -> TestResult {
-    let expected = "Ascending order by x: [(1.0, 5.0), (2.0, 7.0)]\nDescending order by x: [(2.0, 7.0), (1.0, 5.0)]\nAscending order by y: [(1.0, 5.0), (2.0, 7.0)]\nDescending order by y: [(2.0, 7.0), (1.0, 5.0)]\n";
+    let expected = "Ascending order: [(1.0, 5.0), (2.0, 7.0)]\nDescending order: [(2.0, 7.0), (1.0, 5.0)]\n";
     let mut cmd = Command::cargo_bin("2_1")?;
     cmd.arg("1").arg("5").arg("2").arg("7").arg("3").assert().success().stdout(expected);
 
@@ -30,9 +30,9 @@ fn sort_points() -> TestResult {
 
 #[test]
 fn sort_points_bubble() -> TestResult {
-    let expected = "Ascending order by x: [(1.0, 5.0), (2.0, 7.0)]\nDescending order by x: [(2.0, 5.0), (1.0, 7.0)]\nAscending order by y: [(2.0, 5.0), (1.0, 7.0)]\nDescending order by y: [(2.0, 7.0), (1.0, 5.0)]\n";
+    let expected = "Ascending order: [(1.0, 3.0), (1.0, 5.0), (3.0, 2.0)]\nDescending order: [(3.0, 2.0), (1.0, 5.0), (1.0, 3.0)]\n";
     let mut cmd = Command::cargo_bin("2_2")?;
-    cmd.arg("1").arg("5").arg("2").arg("7").arg("3").assert().success().stdout(expected);
+    cmd.arg("1").arg("5").arg("1").arg("3").arg("3").arg("2").assert().success().stdout(expected);
 
     Ok(())
 }  
